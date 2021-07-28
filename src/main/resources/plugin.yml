@@ -1,0 +1,6 @@
+name: VillageDefenseMoreContents
+version: ${project.version}
+main: me.hsgamer.villagedefensemorecontents.VillageDefenseMoreContents
+api-version: 1.13
+depend: [ VillageDefense ]
+authors: [ HSGamer ]
