@@ -5,11 +5,15 @@ import me.hsgamer.villagedefensemorecontents.config.MainConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.WitherSkull;
 import org.bukkit.util.Vector;
 import plugily.projects.villagedefense.arena.Arena;
 import plugily.projects.villagedefense.commonsbox.minecraft.compat.xseries.XMaterial;
 import plugily.projects.villagedefense.creatures.CreatureUtils;
+
+import java.util.List;
 
 public class WitherZombie implements RunnableEnemySpawner {
     @Override
@@ -23,6 +27,17 @@ public class WitherZombie implements RunnableEnemySpawner {
     @Override
     public void onTick(Creature creature) {
         if (creature.getTarget() == null) {
+            return;
+        }
+        List<Entity> nearbyEntities = creature.getNearbyEntities(5, 2, 5);
+        double checkAhead = MainConfig.ZOMBIE_WITHER_CHECK_PLAYER_AHEAD_ANGLE.getValue();
+        if (!nearbyEntities.isEmpty() &&
+                nearbyEntities.parallelStream()
+                        .filter(HumanEntity.class::isInstance)
+                        .map(HumanEntity.class::cast)
+                        .map(humanEntity -> Math.abs(humanEntity.getLocation().toVector().angle(creature.getEyeLocation().getDirection()) * Math.PI / 180))
+                        .noneMatch(angle -> angle > checkAhead)
+        ) {
             return;
         }
         Location location = creature.getLocation();

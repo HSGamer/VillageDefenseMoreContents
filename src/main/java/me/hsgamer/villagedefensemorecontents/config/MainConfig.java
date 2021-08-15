@@ -29,6 +29,7 @@ public class MainConfig extends PathableConfig {
     public static final IntegerConfigPath ZOMBIE_WITHER_AMOUNT = new IntegerConfigPath("zombie.wither.amount", 10);
     public static final DoubleConfigPath ZOMBIE_WITHER_RATE = new DoubleConfigPath("zombie.wither.rate", 0.2);
     public static final SimpleConfigPath<List<Integer>> ZOMBIE_WITHER_PHASE = new SimpleConfigPath<>("zombie.wither.phase", IntStream.range(3, 5).boxed().collect(Collectors.toList()));
+    public static final DoubleConfigPath ZOMBIE_WITHER_CHECK_PLAYER_AHEAD_ANGLE = new DoubleConfigPath("zombie.wither.check-player-ahead-angle", 30.0);
     public static final LongConfigPath ZOMBIE_WITHER_SHOOT_DELAY = new LongConfigPath("zombie.wither.shoot-delay", 40L);
     public static final DoubleConfigPath ZOMBIE_WITHER_SHOOT_POWER = new DoubleConfigPath("zombie.wither.shoot-power", 1.5D);
     public static final BooleanConfigPath ZOMBIE_WITHER_CHARGED = new BooleanConfigPath("zombie.wither.charged", true);
