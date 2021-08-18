@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.WitherSkull;
 import org.bukkit.util.Vector;
 import plugily.projects.villagedefense.arena.Arena;
@@ -29,21 +28,21 @@ public class WitherZombie implements RunnableEnemySpawner {
         if (creature.getTarget() == null) {
             return;
         }
-        List<Entity> nearbyEntities = creature.getNearbyEntities(5, 2, 5);
         double checkAhead = MainConfig.ZOMBIE_WITHER_CHECK_PLAYER_AHEAD_ANGLE.getValue();
-        if (!nearbyEntities.isEmpty() &&
-                nearbyEntities.parallelStream()
-                        .filter(HumanEntity.class::isInstance)
-                        .map(HumanEntity.class::cast)
-                        .map(humanEntity -> Math.abs(humanEntity.getLocation().toVector().angle(creature.getEyeLocation().getDirection()) * Math.PI / 180))
-                        .noneMatch(angle -> angle > checkAhead)
-        ) {
-            return;
-        }
-        Location location = creature.getLocation();
-        Vector power = location.getDirection().multiply(MainConfig.ZOMBIE_WITHER_SHOOT_POWER.getValue());
         boolean charged = MainConfig.ZOMBIE_WITHER_CHARGED.getValue();
+        double multiply = MainConfig.ZOMBIE_WITHER_SHOOT_POWER.getValue();
         Bukkit.getScheduler().runTask(VillageDefenseMoreContents.getInstance(), () -> {
+            List<Entity> nearbyEntities = creature.getNearbyEntities(5, 2, 5);
+            if (!nearbyEntities.isEmpty() &&
+                    nearbyEntities.parallelStream()
+                            .filter(entity -> !CreatureUtils.isEnemy(entity))
+                            .map(humanEntity -> Math.abs(humanEntity.getLocation().toVector().angle(creature.getEyeLocation().getDirection()) * Math.PI / 180))
+                            .noneMatch(angle -> angle > checkAhead)
+            ) {
+                return;
+            }
+            Location location = creature.getLocation();
+            Vector power = location.getDirection().multiply(multiply);
             WitherSkull skull = creature.launchProjectile(WitherSkull.class, power);
             skull.setCharged(charged);
         });
